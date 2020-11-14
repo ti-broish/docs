@@ -1,0 +1,46 @@
+@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+skinparam linetype polyline
+
+title Ти Броиш - Контейнери
+
+Person_Ext(voter, "Гласоподавател", "Гласува в изборните секции и следи резултата в платформата Ти Броиш")
+Person_Ext(representative, "Застъпник", "Политически представител, който брои в секцията и подава протоколите към Ти Броиш")
+Person_Ext(observer, "Наблюдател", "Външен наблюдател на целия изборен процес")
+Person(validator, "Преброител", "Има достъп до администрацията, проверява протоколи и следи за грешки")
+
+System_Boundary(you_count, "Ти Броиш") {
+    Boundary(mobile_clients, "Мобилни приложения") {
+        Container(android_client, "Android приложение", "Kotlin, VueJS")
+        Container(ios_client, "iOS приложение", "Swift, VueJS")
+    }
+
+    Container(web_client, "Публичен сайт", "React/VueJS")
+    Container(admin_client, "Администрация", "React/VueJS")
+
+    Container(results, "Резултати", "CDN")
+
+    Container(api, "API", "NodeJS")
+
+    Rel(web_client, results, "Тегли обработени и агрегирани данни, за да ги визуализира")
+    Rel(mobile_clients, api, "Праща данни от протоколите и сигнали")
+
+    Rel_Left(admin_client, api, "Коригира и обновява протоколите")
+    Rel_Up(api, results, "Записва снимки и суровите данни от протоколите")
+}
+
+System_Ext(crm, "CRM", "CiviCRM")
+Rel(api, crm, "Свързва профилите на потребителите")
+
+Rel_Left(voter, web_client, "Следи изборните резултати")
+Rel(representative, mobile_clients, "Праща протоколи и сигнали от секцията в която е")
+Rel(representative, web_client, "Следи изборните резултати")
+Rel(observer, web_client, "Съблюдава паралелното преброяване")
+Rel(observer, mobile_clients, "Праща сигнали и протоколи")
+Rel_Left(validator, admin_client, "Одобрява или отхвърля пратените протоколи, поправя грешки и обработва сигнали, следи за разлики между СИК и РИК")
+
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Component.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+' skinparam linetype polyline
+
+title Ти Броиш - Публичен сайт
+
+Person_Ext(voter, "Гласоподавател", "Гласува в изборните секции и следи резултата в платформата Ти Броиш")
+Person_Ext(representative, "Застъпник", "Политически представител, който брои в секцията и подава протоколите към Ти Броиш")
+Person_Ext(observer, "Наблюдател", "Външен наблюдател на целия изборен процес")
+
+Container_Boundary(web_client, "Публичен сайт") {
+    Component(frontend, "Front-end", "React")
+    Component(info, "Информационно съдържание", "React")
+    Component(charts, "Графики", "chart.js")
+    Component(results_fetcher, "Извличане на резултат", "axios")
+
+    Rel(frontend, results_fetcher, "Получава последните резултати")
+    Rel(frontend, charts, "Подава резултатите за визуализация")
+}
+
+Container(results, "Резултати", "AWS CloudFront")
+
+Rel(results_fetcher, results, "Тегли обработени и агрегирани данни като проверява на всеки 30 секунди")
+
+Rel(voter, web_client, "Следи изборните резултати")
+Rel(observer, web_client, "Съблюдава паралелното преброяване")
+Rel(representative, web_client, "Следи изборните резултати")
+
+@enduml

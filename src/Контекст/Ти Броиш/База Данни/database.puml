@@ -1,0 +1,179 @@
+@startuml database
+
+class people <<(U,olive)>> {
+  People registered on the platform
+  ==
+  #id : ulid(26)
+  first_name : varchar(255)
+  last_name : varchar(255)
+  +email : varchar(255)
+  +phone_number : varchar(255)
+  pin : char(4)
+  +organization_name : varchar(255)
+  password_hash : varchar(72)
+  registered_at : timestamp(5)
+  roles : json
+}
+
+people "1" <-- "0..*" person_confirmations
+
+class person_confirmations {
+    #id : ulid(26)
+    +person_id : ulid(26)
+    +type : enum(email, phone_number)
+    confirmed_at : timestamp(5)
+}
+
+class sections {
+    Sections in the election
+    ==
+    #id : char(9)
+    +country_id : char(2)
+    +election_region_id : char(2)
+    +municipality_id : char(2)
+    +town_id : smallint
+    +region_id : char(2)
+    +code : char(3)
+}
+
+sections "1..*" --> "1" countries
+sections "1..*" --> "1" election_regions
+sections "1..*" --> "1" municipalities
+sections "1..*" --> "1" regions
+sections "1..*" --> "1" towns
+
+class protocols {
+    Protocols submitted to the platform
+    ==
+    #id : ulid(26)
+    +type : enum(section, election_region)
+    +origin : (ti_broish, cik)
+    +election_region_id : char(2)
+    +section : char(9)
+    data : json
+}
+
+protocols "0..*" --> "1" sections
+protocols "0..*" --> "1" election_regions
+
+class protocol_actions {
+    Actions applied to protocols
+    ==
+    #id : ulid(26)
+    +actor_id : ulid(26)
+    +protocol_id : ulid(26)
+    +action : enum(submitted, edited, approved, rejected, processed)
+    timestamp : timestamp(5)
+}
+
+protocol_actions "0..*" --> "1" protocols
+protocol_actions "0..*" --> "1" people
+
+class reports {
+    Reports sent about election issues
+    ==
+    #id : ulid(26)
+    +section : char(9)
+    +election_region_id : char(2)
+    submitter_id : ulid(26)
+    description : text
+}
+
+reports "0..*" --> "1" sections
+reports "0..*" --> "1" election_regions
+
+class report_updates {
+    Status updates to reports
+    ==
+    #id : ulid(26)
+    +report_id : ulid(26)
+    status : enum(submitted, accepted, rejected, published)
+    actor_id : ulid(26)
+    timestamp : timestamp(5)
+}
+
+report_updates "1..*" --> "1" reports
+
+class pictures {
+    Pictures of protocols and reports
+    ==
+    #id : ulid(26)
+    submitter_id : ulid(26)
+    path : varchar(255)
+    sort_position : smallint
+    created_at : timestamp(5)
+}
+
+pictures "0..*" --> "1" people
+
+class reports_pictures {
+    Join table for the multiple pictures of a report
+    ==
+    +report_id : ulid(26)
+    +picture_id : ulid(26)
+}
+
+reports_pictures "0..1" --> "1" pictures
+reports_pictures "0..*" --> "1" reports
+
+class protocols_pictures {
+    Join table for the multiple pictures of a protocol
+    ==
+    +protocol_id : ulid(26)
+    +picture_id : ulid(26)
+}
+
+protocols_pictures "0..1" --> "1" pictures
+protocols_pictures "1..*" --> "1" protocols
+
+class election_regions {
+    Multi-mandate election regions including one abroad
+    ==
+    #code : char(2)
+    name : varchar(255)
+}
+
+class countries {
+    Countries with sections
+    ==
+    #code : char(2)
+    name : varchar(255)
+}
+
+class municipalities {
+    Municipalities domestically
+    ==
+    #code : char(2)
+    name : varchar(255)
+    election_region_id : char(2)
+}
+
+municipalities "0..*" --> "1" election_regions
+
+class towns {
+    Towns - both domestically and abroad
+    ==
+    #id : smallint
+    name : varchar(255)
+    +country_id : char(2)
+    +election_region_id : char(2)
+    +municipality_id : char(2)
+}
+
+towns "1..*" --> "1" countries
+towns "1..*" --> "1" election_regions
+towns "1..*" --> "0..1" municipalities
+
+class regions {
+    City regions
+    ==
+    #code : char(2)
+    name : varchar(255)
+    +municipality_id : char(2)
+    +town_id : smallint
+}
+
+regions "0..*" --> "1" municipalities
+regions "0..*" --> "1" towns
+
+@enduml

@@ -1,0 +1,40 @@
+@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+skinparam linetype polyline
+
+title Ти Броиш - API
+
+Container_Boundary(api, "Ти Броиш API") {
+    Component(client_api, "Client API", "NodeJS")
+    Component(admin_api, "Admin API", "NodeJS")
+    ContainerDb(db, "База данни", "Postgres")
+    ContainerDb(queue, "Опашка", "AWS SQS / Redis Queues")
+    Component(worker, "Обработчик на опашката", "Lambda")
+
+    Rel(client_api, db, "Записва всеки нов протокол и действие")
+    BiRel(admin_api, db, "Чете протоколи и сигнали, записва всеки нов протокол и действие")
+    Rel(admin_api, queue, "При обработен протокол праща данните в опашката за обработка")
+    Rel(queue, worker, "Взима одобрени протоколи и ги обработва за публикуване на агрегирани резултати")
+}
+
+Boundary(mobile_clients, "Мобилни приложения") {
+    Container(android_client, "Android приложение", "Kotlin, VueJS")
+    Container(ios_client, "iOS приложение", "Swift, VueJS")
+}
+
+Container(admin_client, "Администрация", "React/VueJS")
+
+Container(results, "Резултати", "CDN")
+
+Rel(api, results, "Записва снимки и суровите данни от протоколите")
+Rel(mobile_clients, client_api, "Праща данни от протоколите и сигнали")
+Rel(admin_client, admin_api, "Коригира и обновява протоколите")
+Rel(worker, results, "Записва снимки и суровите данни от протоколите")
+
+System_Ext(crm, "CRM", "CiviCRM")
+Rel_Left(admin_api, crm, "Свързва профилите на потребителите")
+
+@enduml

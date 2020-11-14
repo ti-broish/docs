@@ -1,0 +1,25 @@
+@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+skinparam linetype polyline
+
+title Ти Броиш - Контекст на системата
+
+Person_Ext(voter, "Гласоподавател", "Гласува в изборните секции и следи резултата в платформата Ти Броиш")
+Person_Ext(representative, "Застъпник", "Политически представител, който брои в секцията и подава протоколите към Ти Броиш")
+Person_Ext(observer, "Наблюдател", "Външен наблюдател на целия изборен процес")
+Person(validator, "Преброител", "Има достъп до администрацията, проверява протоколи и следи за грешки")
+
+System(you_count, "Ти Броиш", "Платформа за паралелно преброяване и проследяване на изборния процес")
+System_Ext(crm, "CRM", "CiviCRM")
+
+Rel(you_count, crm, "Свързва профилите на потребителите")
+
+Rel_Right(voter, you_count, "Следи изборните резултати")
+Rel_Left(representative, you_count, "Праща протоколи и сигнали от секцията в която е. Следи изборните резултати.")
+Rel_Down(observer, you_count, "Съблюдава паралелното преброяване")
+Rel_Up(validator, you_count, "Одобрява или отхвърля пратените протоколи, поправя грешки и обработва сигнали, следи за разлики между СИК и РИК")
+
+@enduml
