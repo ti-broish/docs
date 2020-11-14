@@ -1,0 +1,22 @@
+{
+	"projectName": "Ти Броиш",
+	"homepageName": "Въведение",
+	"rootFolder": "src",
+	"distFolder": "docs",
+	"generateMD": false,
+	"generatePDF": false,
+	"generateCompleteMD": true,
+	"generateCompletePDF": true,
+	"generateWEB": true,
+	"webTheme": "//unpkg.com/docsify/lib/themes/vue.css",
+	"repoUrl": "",
+	"webPort": "3232",
+	"pdfCss": "/usr/local/lib/node_modules/c4builder/pdf.css",
+	"plantumlVersion": "latest",
+	"includeBreadcrumbs": true,
+	"includeLinkToDiagram": false,
+	"diagramsOnTop": true,
+	"generateLocalImages": false,
+	"charset": "UTF-8",
+	"hasRun": true
+}

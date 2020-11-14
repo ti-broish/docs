@@ -1,0 +1,10 @@
+{
+  "description": "Документация на архитектурата и структурата на Ти Броиш",
+  "scripts": {
+    "start": "c4builder site -w"
+  },
+  "author": "Yes, Bulgaria",
+  "devDependencies": {
+    "c4builder": "^0.2.8"
+  }
+}
