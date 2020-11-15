@@ -54,11 +54,21 @@ class protocols {
     +origin : (ti_broish, cik)
     +election_region_id : char(2)
     +section : char(9)
-    data : json
 }
 
 protocols "0..*" --> "1" sections
 protocols "0..*" --> "1" election_regions
+
+class protocol_data {
+    Numeric data from the protocols
+    ==
+    #id : ulid(26)
+    protocol_id : ulid(26)
+    data : json
+    created_at : timestamp(5)
+}
+
+protocol_data "0..1" --> "1" protocols
 
 class protocol_actions {
     Actions applied to protocols
