@@ -18,6 +18,8 @@ class people <<(U,olive)>> {
 people "1" <-- "0..*" person_confirmations
 
 class person_confirmations {
+    Confirmations of email address or phone number
+    ==
     #id : ulid(26)
     +person_id : ulid(26)
     +type : enum(email, phone_number)
