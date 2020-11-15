@@ -32,9 +32,6 @@ System_Boundary(you_count, "Ти Броиш") {
     Rel_Up(api, results, "Записва снимки и суровите данни от протоколите")
 }
 
-System_Ext(crm, "CRM", "CiviCRM")
-Rel(api, crm, "Свързва профилите на потребителите")
-
 Rel_Left(voter, web_client, "Следи изборните резултати")
 Rel(representative, mobile_clients, "Праща протоколи и сигнали от секцията в която е")
 Rel(representative, web_client, "Следи изборните резултати")

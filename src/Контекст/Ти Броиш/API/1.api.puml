@@ -34,7 +34,4 @@ Rel(mobile_clients, client_api, "Праща данни от протоколит
 Rel(admin_client, admin_api, "Коригира и обновява протоколите")
 Rel(worker, results, "Записва снимки и суровите данни от протоколите")
 
-System_Ext(crm, "CRM", "CiviCRM")
-Rel_Left(admin_api, crm, "Свързва профилите на потребителите")
-
 @enduml
