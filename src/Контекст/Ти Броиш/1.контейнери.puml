@@ -14,12 +14,12 @@ Person(validator, "Преброител", "Има достъп до админи
 
 System_Boundary(you_count, "Ти Броиш") {
     Boundary(mobile_clients, "Мобилни приложения") {
-        Container(android_client, "Android приложение", "Kotlin, VueJS")
-        Container(ios_client, "iOS приложение", "Swift, VueJS")
+        Container(android_client, "Android приложение", "Ionic, VueJS")
+        Container(ios_client, "iOS приложение", "Ionic, VueJS")
     }
 
-    Container(web_client, "Публичен сайт", "React/VueJS")
-    Container(admin_client, "Администрация", "React/VueJS")
+    Container(web_client, "Публичен сайт", "React")
+    Container(admin_client, "Администрация", "React")
 
     Container(results, "Резултати", "CDN")
 
