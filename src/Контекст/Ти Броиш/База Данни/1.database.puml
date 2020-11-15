@@ -54,6 +54,7 @@ class protocols {
     +origin : (ti_broish, cik)
     +election_region_id : char(2)
     +section : char(9)
+    +status : enum(submitted, approved, rejected, processed)
 }
 
 protocols "0..*" --> "1" sections
