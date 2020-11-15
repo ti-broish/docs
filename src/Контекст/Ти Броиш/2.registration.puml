@@ -1,0 +1,44 @@
+@startuml
+
+title "Регистрация и потвърждение"
+
+' hide footbox
+autonumber "[0] "
+
+actor "Потребител" as Person
+boundary "Мобилни приложения" as MobileClients
+
+control "API" as API
+database "База данни" as Database
+
+control "Email Service" as email_service
+control "SMS Service" as sms_service
+
+==Регистрация==
+
+Person -> MobileClients: Първоначална регистрация
+hnote left
+Име, email, телефонен номер, 4 цифри от ЕГН, парола
+end note
+
+MobileClients -> API: Изпраща данните за регистрация
+API -> Database: Записва потребителя
+
+...
+
+==Потвърждение==
+
+API -> email_service: Изпраща код по имейл
+API -> sms_service: Изпраща код чрез SMS
+
+email_service -> Person: Изпраща код по имейл
+sms_service -> Person: Изпраща код чрез SMS
+
+Person -> MobileClients: Въвежда код от email
+Person -> MobileClients: Въвежда код от SMS
+
+MobileClients -> API: Изпраща кодовете за потвърждение
+
+API -> Database: Записва потвържденията
+
+@enduml

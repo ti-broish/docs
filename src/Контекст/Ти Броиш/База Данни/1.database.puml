@@ -21,6 +21,8 @@ class person_confirmations {
     #id : ulid(26)
     +person_id : ulid(26)
     +type : enum(email, phone_number)
+    code : char(8)
+    expires_at : timestamp(5)
     confirmed_at : timestamp(5)
 }
 
