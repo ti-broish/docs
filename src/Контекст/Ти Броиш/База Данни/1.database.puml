@@ -1,6 +1,12 @@
 @startuml database
 
-class people <<(U,olive)>> {
+legend top left
+    | Symbol | Type |
+    |<#808000>    D| Dimension |
+    |<#FF0000>    F| Fact |
+end legend
+
+class people <<(D,olive)>> {
   People registered on the platform
   ==
   #id : ulid(26)
@@ -17,7 +23,7 @@ class people <<(U,olive)>> {
 
 person_confirmations "0..*" --> "1" people
 
-class person_confirmations {
+class person_confirmations <<(F,red)>> {
     Confirmations of email address or phone number
     ==
     #id : ulid(26)
@@ -28,7 +34,7 @@ class person_confirmations {
     confirmed_at : timestamp(5)
 }
 
-class sections {
+class sections <<(D,olive)>> {
     Sections in the election
     ==
     #id : char(9)
@@ -46,7 +52,7 @@ sections "1..*" --> "1" municipalities
 sections "1..*" --> "1" regions
 sections "1..*" --> "1" towns
 
-class protocols {
+class protocols <<(D,olive)>> {
     Protocols submitted to the platform
     ==
     #id : ulid(26)
@@ -60,7 +66,7 @@ class protocols {
 protocols "0..*" --> "1" sections
 protocols "0..*" --> "1" election_regions
 
-class protocol_data {
+class protocol_data <<(D,olive)>> {
     Numeric data from the protocols
     ==
     #id : ulid(26)
@@ -71,7 +77,7 @@ class protocol_data {
 
 protocol_data "0..1" --> "1" protocols
 
-class protocol_actions {
+class protocol_actions <<(F,red)>> {
     Actions applied to protocols
     ==
     #id : ulid(26)
@@ -84,7 +90,7 @@ class protocol_actions {
 protocol_actions "0..*" --> "1" protocols
 protocol_actions "0..*" --> "1" people
 
-class reports {
+class reports <<(D,olive)>> {
     Reports sent about election issues
     ==
     #id : ulid(26)
@@ -97,7 +103,7 @@ class reports {
 reports "0..*" --> "1" sections
 reports "0..*" --> "1" election_regions
 
-class report_updates {
+class report_updates <<(F,red)>> {
     Status updates to reports
     ==
     #id : ulid(26)
@@ -109,7 +115,7 @@ class report_updates {
 
 report_updates "1..*" --> "1" reports
 
-class pictures {
+class pictures <<(D,olive)>> {
     Pictures of protocols and reports
     ==
     #id : ulid(26)
@@ -121,7 +127,7 @@ class pictures {
 
 pictures "0..*" --> "1" people
 
-class reports_pictures {
+class reports_pictures <<(F,red)>> {
     Join table for the multiple pictures of a report
     ==
     +report_id : ulid(26)
@@ -131,7 +137,7 @@ class reports_pictures {
 reports_pictures "0..1" --> "1" pictures
 reports_pictures "0..*" --> "1" reports
 
-class protocols_pictures {
+class protocols_pictures <<(F,red)>> {
     Join table for the multiple pictures of a protocol
     ==
     +protocol_id : ulid(26)
@@ -141,21 +147,21 @@ class protocols_pictures {
 protocols_pictures "0..1" --> "1" pictures
 protocols_pictures "1..*" --> "1" protocols
 
-class election_regions {
+class election_regions <<(D,olive)>> {
     Multi-mandate election regions including one abroad
     ==
     #code : char(2)
     name : varchar(255)
 }
 
-class countries {
+class countries <<(D,olive)>> {
     Countries with sections
     ==
     #code : char(2)
     name : varchar(255)
 }
 
-class municipalities {
+class municipalities <<(D,olive)>> {
     Municipalities domestically
     ==
     #code : char(2)
@@ -165,7 +171,7 @@ class municipalities {
 
 municipalities "0..*" --> "1" election_regions
 
-class towns {
+class towns <<(D,olive)>> {
     Towns - both domestically and abroad
     ==
     #id : smallint
@@ -179,7 +185,7 @@ towns "1..*" --> "1" countries
 towns "1..*" --> "1" election_regions
 towns "1..*" --> "0..1" municipalities
 
-class regions {
+class regions <<(D,olive)>> {
     City regions
     ==
     #code : char(2)
