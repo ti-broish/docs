@@ -62,15 +62,12 @@ class protocols <<(D,olive)>> {
     Protocols submitted to the platform
     ==
     #id : ulid(26)
-    +type : enum(section, election_region)
     +origin : (ti_broish, cik)
-    +election_region_id : char(2)
     +section : char(9)
     +status : enum(submitted, approved, rejected, processed)
 }
 
 protocols "0..*" --> "1" sections
-protocols "0..*" --> "1" election_regions
 
 class protocol_data <<(D,olive)>> {
     Numeric data from the protocols
@@ -101,13 +98,11 @@ class reports <<(D,olive)>> {
     ==
     #id : ulid(26)
     +section : char(9)
-    +election_region_id : char(2)
     submitter_id : ulid(26)
     description : text
 }
 
 reports "0..*" --> "1" sections
-reports "0..*" --> "1" election_regions
 
 class report_updates <<(F,red)>> {
     Status updates to reports
