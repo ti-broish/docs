@@ -48,9 +48,9 @@ class sections <<(D,olive)>> {
     #id : char(9)
     +country_id : char(2)
     +election_region_id : char(2)
-    +town_id : smallint
+    +town_id : smallint()
     +city_region_id : char(2)
-    +code : char(3)
+    code : char(3)
 }
 
 sections "1..*" --> "1" countries
@@ -98,7 +98,7 @@ class reports <<(D,olive)>> {
     ==
     #id : ulid(26)
     +section : char(9)
-    submitter_id : ulid(26)
+    author_id : ulid(26)
     description : text
 }
 
@@ -120,9 +120,9 @@ class pictures <<(D,olive)>> {
     Pictures of protocols and reports
     ==
     #id : ulid(26)
-    submitter_id : ulid(26)
+    author_id : ulid(26)
     path : varchar(255)
-    sort_position : smallint
+    +sort_position : smallint()
     created_at : timestamp(5)
 }
 
@@ -151,21 +151,23 @@ protocols_pictures "1..*" --> "1" protocols
 class election_regions <<(D,olive)>> {
     Multi-mandate election regions including one abroad
     ==
-    #code : char(2)
+    #id : char(2)
     name : varchar(255)
+    is_foreign : boolean
 }
 
 class countries <<(D,olive)>> {
     Countries with sections
     ==
-    #code : char(2)
+    #id : char(2)
     name : varchar(255)
+    is_foreign : boolean
 }
 
 class municipalities <<(D,olive)>> {
     Municipalities domestically
     ==
-    #code : char(2)
+    #id : char(2)
     name : varchar(255)
     election_region_id : char(2)
 }
