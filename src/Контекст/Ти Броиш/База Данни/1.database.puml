@@ -49,13 +49,13 @@ class sections <<(D,olive)>> {
     +country_id : char(2)
     +election_region_id : char(2)
     +town_id : smallint
-    +region_id : char(2)
+    +city_region_id : char(2)
     +code : char(3)
 }
 
 sections "1..*" --> "1" countries
 sections "1..*" --> "1" election_regions
-sections "1..*" --> "1" regions
+sections "1..*" --> "1" city_regions
 sections "1..*" --> "1" towns
 
 class protocols <<(D,olive)>> {
@@ -189,14 +189,14 @@ class towns <<(D,olive)>> {
 towns "1..*" --> "1" countries
 towns "1..*" --> "0..1" municipalities
 
-class regions <<(D,olive)>> {
+class city_regions <<(D,olive)>> {
     City regions
     ==
-    #code : char(2)
+    #id : char(2)
     name : varchar(255)
     +town_id : smallint
 }
 
-regions "0..*" --> "1" towns
+city_regions "0..*" --> "1" towns
 
 @enduml
