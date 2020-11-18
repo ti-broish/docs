@@ -48,7 +48,6 @@ class sections <<(D,olive)>> {
     #id : char(9)
     +country_id : char(2)
     +election_region_id : char(2)
-    +municipality_id : char(2)
     +town_id : smallint
     +region_id : char(2)
     +code : char(3)
@@ -56,7 +55,6 @@ class sections <<(D,olive)>> {
 
 sections "1..*" --> "1" countries
 sections "1..*" --> "1" election_regions
-sections "1..*" --> "1" municipalities
 sections "1..*" --> "1" regions
 sections "1..*" --> "1" towns
 
@@ -185,12 +183,10 @@ class towns <<(D,olive)>> {
     #id : smallint
     name : varchar(255)
     +country_id : char(2)
-    +election_region_id : char(2)
     +municipality_id : char(2)
 }
 
 towns "1..*" --> "1" countries
-towns "1..*" --> "1" election_regions
 towns "1..*" --> "0..1" municipalities
 
 class regions <<(D,olive)>> {
@@ -198,11 +194,9 @@ class regions <<(D,olive)>> {
     ==
     #code : char(2)
     name : varchar(255)
-    +municipality_id : char(2)
     +town_id : smallint
 }
 
-regions "0..*" --> "1" municipalities
 regions "0..*" --> "1" towns
 
 @enduml
