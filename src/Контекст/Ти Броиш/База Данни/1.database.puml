@@ -15,7 +15,7 @@ class people <<(U,olive)>> {
   roles : json
 }
 
-people "1" <-- "0..*" person_confirmations
+person_confirmations "0..*" --> "1" people
 
 class person_confirmations {
     Confirmations of email address or phone number
