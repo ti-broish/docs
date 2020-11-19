@@ -1,0 +1,67 @@
+global-results.json
+
+{
+	parties: [{
+		name: String,
+		number: Number,
+		validVotes: Number,
+		invalidVotes: Number,
+		percentage: Number,	
+	}],
+	
+	regions: [{
+		number: Number,
+		name: String,
+		abroad: Boolean,
+	}],
+	
+	validVotes: Number,
+	invalidVotes: Number,
+}
+
+region-[regionNumber].json // e.g. region-23.json
+
+{
+	abroad: Boolean,	
+	name: String,
+	number: Number,
+
+	parties: [{
+		name: String,
+		number: Number,
+		validVotes: Number,
+		invalidVotes: Number,
+		percentage: Number,	
+	}],
+		
+	sections: [{
+		number: Number,
+		municipality: String,
+		town: String
+        }]
+
+	validVotes: Number,
+	invalidVotes: Number,
+}
+
+section-[sectionNumber].json // e.g. section-234602001.json
+
+{
+	protocolUrl: String,
+	totalBallots: Number,
+	unusedBallots: Number,
+	voters: Number,
+	voted: Number,
+	
+	validVotes: Number,
+	invalidVotes: Number,
+
+	parties: [{
+		name: String,
+		number: Number,
+		validVotes: Number,
+		invalidVotes: Number,
+		percentage: Number,	
+	}],
+	
+}
