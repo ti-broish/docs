@@ -27,7 +27,7 @@ people "0..*" --> "1" organizations
 class organizations <<(D,olive)>> {
     Organizations which could monitor the elections.
     ==
-    #id : smallint
+    #id : smallint()
     name: varchar(255)
 }
 
@@ -177,7 +177,7 @@ municipalities "0..*" --> "1" election_regions
 class towns <<(D,olive)>> {
     Towns - both domestically and abroad
     ==
-    #id : smallint
+    #id : smallint()
     name : varchar(255)
     +country_id : char(2)
     +municipality_id : char(2)
@@ -191,7 +191,7 @@ class city_regions <<(D,olive)>> {
     ==
     #id : char(2)
     name : varchar(255)
-    +town_id : smallint
+    +town_id : smallint()
 }
 
 city_regions "0..*" --> "1" towns
