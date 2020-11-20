@@ -196,4 +196,12 @@ class city_regions <<(D,olive)>> {
 
 city_regions "0..*" --> "1" towns
 
+class parties <<(D,olive)>> {
+    Parties participating in the elections
+    ==
+    #id : smallint()
+    name : varchar(255)
+    display_name: varchar(255)
+}
+
 @enduml
