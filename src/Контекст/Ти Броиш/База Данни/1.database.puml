@@ -46,14 +46,12 @@ class sections <<(D,olive)>> {
     Sections in the election
     ==
     #id : char(9)
-    +country_id : char(2)
     +election_region_id : char(2)
     +town_id : smallint()
     +city_region_id : char(2)
     code : char(3)
 }
 
-sections "1..*" --> "1" countries
 sections "1..*" --> "1" election_regions
 sections "1..*" --> "1" city_regions
 sections "1..*" --> "1" towns
