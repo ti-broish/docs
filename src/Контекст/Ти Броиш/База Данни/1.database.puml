@@ -1,24 +1,25 @@
 @startuml database
 
 legend top left
-    | Symbol | Type |
-    |<#808000>    D| Dimension |
-    |<#FF0000>    F| Fact |
+| Symbol | Type |
+|<#808000>    D| Dimension |
+|<#FF0000>    F| Fact |
 end legend
 
 class people <<(D,olive)>> {
-  People registered on the platform
-  ==
-  #id : ulid(26)
-  first_name : varchar(255)
-  last_name : varchar(255)
-  +email : varchar(255)
-  +phone : varchar(255)
-  pin : char(4)
-  +organization_id : smallint()
-  registered_at : timestamp(5)
-  roles : json
-  +firebase_uid : varchar(255)
+    People registered on the platform
+    ==
+    #id : ulid(26)
+    first_name : varchar(255)
+    last_name : varchar(255)
+    +email : varchar(255)
+    +phone : varchar(255)
+    pin : char(4)
+    +organization_id : smallint()
+    registered_at : timestamp(5)
+    roles : json
+    +firebase_uid : varchar(255)
+    has_agreed_to_keep_data : boolean
 }
 
 person_confirmations "0..*" --> "1" people
@@ -48,8 +49,13 @@ class sections <<(D,olive)>> {
     #id : char(9)
     +election_region_id : char(2)
     +town_id : smallint()
-    +city_region_id : char(2)
+    +city_region_id : smallint
     code : char(3)
+    place : varchar
+    voters_count : number
+    is_mobile: boolean
+    is_ship: boolean
+    is_machine: boolean
 }
 
 sections "1..*" --> "1" election_regions
@@ -61,22 +67,40 @@ class protocols <<(D,olive)>> {
     ==
     #id : ulid(26)
     +origin : (ti_broish, cik)
-    +section : char(9)
-    +status : enum(submitted, approved, rejected, processed)
+    +section_id : char(9)
+    +status : enum(received, rejected, approved, replaced, published)
+    +parent_id : ulid(26)
 }
 
 protocols "0..*" --> "1" sections
+protocols "0..*" --> "1" protocols
 
-class protocol_data <<(D,olive)>> {
+class protocol_data <<(F,red)>> {
     Numeric data from the protocols
     ==
     #id : ulid(26)
     protocol_id : ulid(26)
-    data : json
+    valid_votes_count: int
+    invalid_votes_count: int
+    machine_votes_count: int
     created_at : timestamp(5)
 }
 
 protocol_data "0..1" --> "1" protocols
+
+class protocol_results <<(F,red)>> {
+    Numeric data from the protocols for each party/candidate
+    ==
+    #id : ulid(26)
+    protocol_id : ulid(26)
+    party_id : smallint
+    valid_votes_count: int
+    invalid_votes_count: int
+    created_at : timestamp(5)
+}
+
+protocol_results "0..*" --> "1" protocols
+protocol_results "0..*" --> "1" parties
 
 class protocol_actions <<(F,red)>> {
     Actions applied to protocols
@@ -84,12 +108,22 @@ class protocol_actions <<(F,red)>> {
     #id : ulid(26)
     +actor_id : ulid(26)
     +protocol_id : ulid(26)
-    +action : enum(submitted, edited, approved, rejected, processed)
+    +action : enum(send, reject, approve, replace, publish)
     timestamp : timestamp(5)
 }
 
 protocol_actions "0..*" --> "1" protocols
 protocol_actions "0..*" --> "1" people
+
+class protocols_assignees <<(F,red)>> {
+    People assigned to review protocols
+    ==
+    +assignee_id : ulid(26)
+    +protocol_id : ulid(26)
+}
+
+protocols_assignees "0..*" --> "1" protocols
+protocols_assignees "0..*" --> "1" people
 
 class reports <<(D,olive)>> {
     Reports sent about election issues
@@ -129,8 +163,8 @@ pictures "0..*" --> "1" people
 class reports_pictures <<(F,red)>> {
     Join table for the multiple pictures of a report
     ==
-    +report_id : ulid(26)
-    +picture_id : ulid(26)
+    #report_id : ulid(26)
+    #picture_id : ulid(26)
 }
 
 reports_pictures "0..1" --> "1" pictures
@@ -139,8 +173,8 @@ reports_pictures "0..*" --> "1" reports
 class protocols_pictures <<(F,red)>> {
     Join table for the multiple pictures of a protocol
     ==
-    +protocol_id : ulid(26)
-    +picture_id : ulid(26)
+    #protocol_id : ulid(26)
+    #picture_id : ulid(26)
 }
 
 protocols_pictures "0..1" --> "1" pictures
@@ -149,36 +183,46 @@ protocols_pictures "1..*" --> "1" protocols
 class election_regions <<(D,olive)>> {
     Multi-mandate election regions including one abroad
     ==
-    #id : char(2)
+    #code : char(2)
     name : varchar(255)
-    is_foreign : boolean
+    +is_abroad : boolean
 }
 
 class countries <<(D,olive)>> {
     Countries with sections
     ==
-    #id : char(2)
+    #id : smallint()
+    +code : char(2)
     name : varchar(255)
-    is_foreign : boolean
+    +is_abroad : boolean
 }
 
 class municipalities <<(D,olive)>> {
     Municipalities domestically
     ==
-    #id : char(2)
+    #id : smallint()
+    code: char(2)
     name : varchar(255)
-    election_region_id : char(2)
 }
 
-municipalities "0..*" --> "1" election_regions
+class election_regions_municipalities <<(F,red)>> {
+    Join table for multiple municipalities in a region and regions in a municipality
+    ==
+    #election_region_id : char(2)
+    #munucipality_id : smallint
+}
+
+election_regions_municipalities "1..*" --> "1..*" municipalities
+election_regions_municipalities "1..*" --> "1..*" election_regions
 
 class towns <<(D,olive)>> {
     Towns - both domestically and abroad
     ==
-    #id : smallint()
+    #id : int
     name : varchar(255)
-    +country_id : char(2)
-    +municipality_id : char(2)
+    code: int
+    +country_id : smallint()
+    +municipality_id : smallint()
 }
 
 towns "1..*" --> "1" countries
@@ -187,7 +231,8 @@ towns "1..*" --> "0..1" municipalities
 class city_regions <<(D,olive)>> {
     City regions
     ==
-    #id : char(2)
+    #id : smallint()
+    code : char(2)
     name : varchar(255)
     +town_id : smallint()
 }
@@ -200,6 +245,7 @@ class parties <<(D,olive)>> {
     #id : smallint()
     name : varchar(255)
     display_name: varchar(255)
+    color_code: char(6)
 }
 
 @enduml
