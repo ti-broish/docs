@@ -1,0 +1,22 @@
+@startuml Protocol State Machine
+
+title Protocol State Machine
+
+[*] --> Received
+Received --> Approved
+Received --> Rejected
+Received --> Replaced
+Approved --> Replaced
+Approved --> Published
+Published --> Replaced
+Published --> [*]
+Replaced --> [*]
+Rejected --> [*]
+
+Received: Freshly received from an app submission
+Rejected: Rejected as invalid
+Replaced: Data is edited and new data is submitted as a separate approved protocol
+Approved: Approved for publishing
+Published: Published to results
+
+@enduml
